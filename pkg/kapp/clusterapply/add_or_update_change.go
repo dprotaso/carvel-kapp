@@ -4,6 +4,7 @@
 package clusterapply
 
 import (
+	errs "errors"
 	"fmt"
 	"time"
 
@@ -143,7 +144,11 @@ func (c AddOrUpdateChange) tryToResolveUpdateConflict(
 			return fmt.Errorf("Expected recalculated change to be an update")
 		}
 		if recalcChanges[0].OpsDiff().MinimalMD5() != c.change.OpsDiff().MinimalMD5() {
-			return fmt.Errorf(errMsgPrefix+"(approved diff no longer matches): %s", origErr)
+			errMsg := fmt.Sprintf("%s (approved diff no longer matches): %s\ndiff:\n%s", errMsgPrefix, origErr,
+				recalcChanges[0].ConfigurableTextDiff().Full().String(false),
+			)
+
+			return errs.New(errMsg)
 		}
 
 		updatedRes, err := c.identifiedResources.Update(recalcChanges[0].NewResource())
