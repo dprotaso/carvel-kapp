@@ -145,7 +145,7 @@ func (c AddOrUpdateChange) tryToResolveUpdateConflict(
 		}
 		if recalcChanges[0].OpsDiff().MinimalMD5() != c.change.OpsDiff().MinimalMD5() {
 			errMsg := fmt.Sprintf("%s (approved diff no longer matches): %s\ndiff:\n%s", errMsgPrefix, origErr,
-				recalcChanges[0].ConfigurableTextDiff().Full().String(false),
+				recalcChanges[0].ConfigurableTextDiff().Full().String(true),
 			)
 
 			return errs.New(errMsg)
