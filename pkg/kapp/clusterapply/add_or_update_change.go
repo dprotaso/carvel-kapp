@@ -144,11 +144,20 @@ func (c AddOrUpdateChange) tryToResolveUpdateConflict(
 			return fmt.Errorf("Expected recalculated change to be an update")
 		}
 		if recalcChanges[0].OpsDiff().MinimalMD5() != c.change.OpsDiff().MinimalMD5() {
-			errMsg := fmt.Sprintf("%s (approved diff no longer matches): %s\ndiff:\n%s\nops diff:\nrecalc: %s\norig: %s", errMsgPrefix, origErr,
+			errMsg := fmt.Sprintf(`%s (approved diff no longer matches): %s
+recalc-diff:
+%s
+recalc-ops-diff:
+%s
+org-diff:
+%s
+org-ops-diff:
+%s
+`, errMsgPrefix, origErr,
 				recalcChanges[0].ConfigurableTextDiff().Full().String(true),
 				recalcChanges[0].OpsDiff().MinimalString(),
+				c.change.ConfigurableTextDiff().Full().String(true),
 				c.change.OpsDiff().MinimalString(),
-				
 			)
 
 			return errs.New(errMsg)
